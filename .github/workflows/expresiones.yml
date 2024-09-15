@@ -38,6 +38,18 @@ jobs:
                 exit 1
                fi 
 
+    revisar_comentarios:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Revisar si el PR body contiene 'iMrJulian'
+              if: ${{ contains(github.event.pull_request.body, 'iMrJulian') }}
+              run: |
+                echo "El cuerpo del PR contiene 'iMrJulian'."
+                exit 1
+
+            - name: PR Body no contiene 'iMrJulian'
+              run: echo "El cuerpo del PR no contiene 'iMrJulian'."
+
         
 
 
