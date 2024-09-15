@@ -33,7 +33,7 @@ jobs:
               run: echo "RESULT=$?" >> $GITHUB_ENV
             - name: Revisar la salida del script
               run: |
-               if ${{ contains(env.RESULT, 'iMrJulian') }} then
+               if  [[ "$RESULT" == *"iMrJulian"* ]]; then
                 echo "Adios iMrJulian"
                 exit 1
                fi 
