@@ -1,0 +1,43 @@
+name: Expression
+on:
+    workflow_dispatch:
+        inputs:
+            nombre:
+                description: 'Nombre'
+                required: true
+                type: string
+    
+    pull_request:
+        types: [opened, synchronize, reopened]
+        paths:
+        - '**.py'
+
+jobs:
+    manual:
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        runs-on: ubuntu_latest
+        steps:
+            - name: Correr manual
+              run: echo ${{ inputs.nombre }} esta aprendiendo de workflows
+    
+    automatico:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+            - name: Definir variable
+              run: echo "USERNAME=${{ github.actor }}" >> $GITHUB_ENV
+            - name: Correr script
+              run: python main.py
+            - name: Obtener salida
+              run: echo "RESULT=$?" >> $GITHUB_ENV
+            - name: Revisar la salida del script
+              run: |
+               if [ contains(env.RESULT, 'iMrJulian') -ne 0 ]; then
+                echo "Adios iMrJulian"
+                exit 1
+               fi 
+
+        
+
+
