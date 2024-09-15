@@ -1,0 +1,55 @@
+name: Expression
+on:
+    workflow_dispatch:
+        inputs:
+            nombre:
+                description: 'Nombre'
+                required: true
+                type: string
+    
+    pull_request:
+        types: [opened, synchronize, reopened]
+        paths:
+        - '**.py'
+
+jobs:
+    manual:
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        runs-on: ubuntu_latest
+        steps:
+            - name: Correr manual
+              run: echo ${{ inputs.nombre }} esta aprendiendo de workflows
+    
+    automatico:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+            - name: Definir variable
+              run: echo "USERNAME=${{ github.actor }}" >> $GITHUB_ENV
+            - name: Correr script
+              run: python main.py
+            - name: Obtener salida
+              run: echo "RESULT=$?" >> $GITHUB_ENV
+            - name: Revisar la salida del script
+              run: |
+               if  [[ "$RESULT" == *"iMrJulian"* ]]; then
+                echo "Adios iMrJulian"
+                exit 1
+               fi 
+
+    revisar_comentarios:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Revisar si el PR body contiene 'iMrJulian'
+              if: ${{ contains(github.event.pull_request.body, 'iMrJulian') }}
+              run: |
+                echo "El cuerpo del PR contiene 'iMrJulian'."
+                exit 1
+
+            - name: PR Body no contiene 'iMrJulian'
+              run: echo "El cuerpo del PR no contiene 'iMrJulian'."
+
+        
+
+
